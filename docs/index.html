@@ -1,0 +1,113 @@
+<!doctype html>
+<meta charset="UTF-8">
+<head>
+<title>Measure Liquidity of Liquid Wrappers - eliteness.network/compare-wrappers</title>
+<meta name="description" content="Measure Liquidity of Liquid Wrappers - eliteness.network/compare-wrappers : Powered by Guru Network 🦾,🚀">
+<meta name="keywords" content="Comparision, Liquidity, Liquid Wrapper, Solidly, Dex, Forks">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="https://ftm.guru/icons/solidly.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+</head>
+<style>
+
+
+
+/*
+@font-face{font-family:bold;src: url(https://ftm.guru/font/bold.ttf);}
+@font-face{ font-family:italic;src: url(https://ftm.guru/font/italic.ttf);}
+@font-face{ font-family:light_italic;src: url(https://ftm.guru/font/light_italic.ttf);}
+@font-face{ font-family:regular;src: url(https://ftm.guru/font/regular.ttf);}
+@font-face{ font-family:regular_italic;src: url(https://ftm.guru/font/regular_italic.ttf);}
+*/
+@font-face{ font-family:light;src: url(https://ftm.guru/font/light.ttf);}
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+html{
+  background-size: 100%;
+  background-attachment: fixed;
+  color:#000;
+  /*text-shadow: 2px 2px 2px #000;*/
+  background-image: radial-gradient( #32CCBCa1, #90F7EC21);
+
+}
+* {
+  scroll-behavior: smooth !important;
+  font-family:'Inter', sans-serif;
+  transition: background-size 0.5s;
+}
+
+
+</style>
+
+
+<h1>Fantom Gitcoin Grants</h1>
+<div>
+
+	<table>
+		<thead>
+			<tr>
+				<td>Status</td>
+				<td>Project</td>
+			</tr>
+		</thead>
+	 	<tbody id="m1">
+	 	</tbody>
+	</table>
+
+</div>
+
+<script>
+function $(_) {console.log(_);return document.getElementById(_);}
+let provider= {};
+let signer= {};
+window.addEventListener('load',async function()
+{
+	console.log("waitin for 1.337 secs..");
+	//$("cw_m").innerHTML = "Connecting.. Please wait."
+	setTimeout(async () => { await basetrip();  }, 1337);
+}, false);
+
+
+
+async function basetrip() {
+
+	a=await getRoundList();
+	console.log(a);
+	b=await getProjects(a);
+	console.log(b);
+
+	for(i=0; i< b.length; i++) {
+		$("m1").innerHTML += `
+			<tr>
+				<td>${a[i].statusDescription}</td>
+				<td>${b[i].application.project.title}</td>
+			</tr>
+		`;
+	}
+
+
+}
+
+async function getRoundList() {
+	_d = JSON.stringify({"query":"query {roundApplications {    project statusDescription}}","variables":null});
+	_r = await fetch("https://api.thegraph.com/subgraphs/name/gitcoinco/grants-round-fantom-mainnet", {
+    	"headers": { "Content-Type": "application/json" },
+    	"body": "{\"query\":\"query {roundApplications {statusDescription metaPtr {pointer}}}\",\"variables\":null}",
+    	"method": "POST",
+    	"mode": "cors"
+	});
+	_a = await _r.json();
+	return _a.data.roundApplications;
+}
+
+async function getProjects(_l) {
+
+	_f = _l.map( i => fetch("https://gitcoin.mypinata.cloud/ipfs/" + i.metaPtr.pointer) );
+	_p = await Promise.all(_f);
+	_d = _p.map( i => i.json() );
+	return ( await Promise.all(_d) );
+
+}
+
+</script>
+
+</html>
