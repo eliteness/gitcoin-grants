@@ -35,12 +35,13 @@ html{
   transition: background-size 0.5s;
 }
 
-
+thead tr td {font-size:1.5em}
+tbody tr td {padding:5px}
 </style>
 
 
 <h1>Fantom Gitcoin Grants</h1>
-<div>
+<div align="center">
 
 	<table>
 		<thead>
@@ -71,15 +72,15 @@ window.addEventListener('load',async function()
 async function basetrip() {
 
 	a=await getRoundList();
-	console.log(a);
+	//console.log(a);
 	b=await getProjects(a);
-	console.log(b);
+	//console.log(b);
 
 	for(i=0; i< b.length; i++) {
 		$("m1").innerHTML += `
 			<tr>
 				<td>${a[i].statusDescription}</td>
-				<td>${b[i].application.project.title}</td>
+				<td><a target="_blank" href="${b[i].application.project.website}">${b[i].application.project.title}</a></td>
 			</tr>
 		`;
 	}
